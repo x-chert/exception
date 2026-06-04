@@ -1,0 +1,23 @@
+services:
+  Xchert\Exception\ErrorFactory\ErrorFactory:
+
+  Xchert\Exception\ErrorFactory\StackExceptionMapper:
+    tags:
+      - { name: 'xch.exception.error_mapper', id: 'stack_exception', priority: 1100 }
+
+
+  Xchert\Exception\ErrorFactory\ConstraintViolationExceptionMapper:
+    tags:
+      - { name: 'xch.exception.error_mapper', id: 'contraint_violation_exception', priority: 1100 }
+
+
+  Xchert\Exception\ErrorFactory\ErrorExceptionMapper:
+    tags:
+      - { name: 'xch.exception.error_mapper', id: 'error_exception', priority: 1000 }
+
+
+  Xchert\Exception\ErrorFactory\HttpExceptionMapper:
+    tags:
+      - { name: 'xch.exception.error_mapper', id: 'http_exception' }
+
+

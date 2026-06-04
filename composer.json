@@ -5,6 +5,7 @@
 			"name": "Dustin Simon"
 		}
 	],
+	"license": "MIT",
 	"autoload": {
 		"psr-4": {
 			"Xchert\\Exception\\": "src/"

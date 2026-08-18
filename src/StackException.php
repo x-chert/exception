@@ -4,7 +4,7 @@ namespace Xchert\Exception;
 
 class StackException extends ErrorException
 {
-    public const ERROR_CODE = 'XCHERT_EXCEPTION__STACK_ERROR';
+    public const string ERROR_CODE = 'XCHERT_EXCEPTION__STACK_ERROR';
 
     private array $errors;
     private int $status;
@@ -12,9 +12,9 @@ class StackException extends ErrorException
     public function __construct(
         string $message,
         array $parameters,
-        string $source,
         int $statusCode,
-        ?\Throwable $previous,
+        ?string $source = null,
+        ?\Throwable $previous = null,
         \Throwable ...$errors
     ) {
         parent::__construct(

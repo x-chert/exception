@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Error implements \JsonSerializable
 {
-    public const ERROR_CODE_UNKNOWN = 'XCHERT_EXCEPTION__UNKNOWN_ERROR';
+    public const string ERROR_CODE_UNKNOWN = 'XCHERT_EXCEPTION__UNKNOWN_ERROR';
 
     public function __construct(
         private readonly string $id,
@@ -17,7 +17,7 @@ class Error implements \JsonSerializable
         private readonly int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR,
         private readonly ?array $trace = null,
         private readonly string $type = 'Error',
-        private readonly string $source = 'unknown',
+        private readonly ?string $source = null,
         private readonly ?DateTimeInterface $occuredAt = new \DateTime()
     ) {}
 
@@ -56,7 +56,7 @@ class Error implements \JsonSerializable
         return $this->type;
     }
 
-    public function getSource(): string
+    public function getSource(): ?string
     {
         return $this->source;
     }

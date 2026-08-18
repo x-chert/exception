@@ -14,7 +14,7 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
     public function __construct(
         string $message,
         private readonly array $parameters = [],
-        private readonly string $source = 'unknown',
+        private readonly ?string $source = null,
         array $headers = [],
         ?\Throwable $previous = null
     ) {
@@ -46,7 +46,7 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
         return (new \ReflectionClass($this))->getShortName();
     }
 
-    public function getSource(): string
+    public function getSource(): ?string
     {
         return $this->source;
     }
@@ -63,14 +63,14 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
 
     protected function buildMessage(string $message, array $parameters = []): string
     {
-        if(empty($parameters)) {
+        if (empty($parameters)) {
             return $message;
         }
 
         $regex = [];
 
-        foreach($parameters as $key => $value) {
-            if(\is_array($value)) {
+        foreach ($parameters as $key => $value) {
+            if (\is_array($value)) {
                 continue;
             }
 
@@ -78,7 +78,7 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
             $regex[\sprintf('/\{\{(\s+)?(%s)(\s+)?\}\}/', $formattedKey)] = $value;
         }
 
-        return (string) \preg_replace(\array_keys($regex), \array_values($regex), $message);
+        return (string)\preg_replace(\array_keys($regex), \array_values($regex), $message);
     }
 
     protected function generateId(): string

@@ -10,7 +10,7 @@ class ExceptionStack
 
     public function __construct(
         private ?string $message = null,
-        private string $source = 'unknown',
+        private ?string $source = null,
         private array $parameters = [],
         private int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR,
     ) {}
@@ -35,12 +35,12 @@ class ExceptionStack
         $this->parameters = $parameters;
     }
 
-    public function getSource(): string
+    public function getSource(): ?string
     {
         return $this->source;
     }
 
-    public function setSource(string $source): void
+    public function setSource(?string $source): void
     {
         $this->source = $source;
     }
@@ -57,14 +57,14 @@ class ExceptionStack
 
     public function add(\Throwable ...$errors): void
     {
-        foreach($errors as $error) {
+        foreach ($errors as $error) {
             $this->errors[] = $error;
         }
     }
 
     public function throw(): void
     {
-        if(\count($this->errors) === 0) {
+        if (\count($this->errors) === 0) {
             return;
         }
 
@@ -87,7 +87,7 @@ class ExceptionStack
     {
         $message = '';
 
-        foreach($this->errors as $error) {
+        foreach ($this->errors as $error) {
             $message .= ' • '.trim($error->getMessage())."\n";
         }
 

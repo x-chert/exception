@@ -8,12 +8,12 @@ use Xchert\Exception\ErrorException;
 
 class ConstraintViolationException extends ErrorException
 {
-    public const ERROR_CODE = 'XCHERT_EXCEPTION__CONSTRAINT_VIOLATION';
+    public const string ERROR_CODE = 'XCHERT_EXCEPTION__CONSTRAINT_VIOLATION';
 
     public function __construct(
         protected readonly ConstraintViolationListInterface $violations,
         protected readonly array $data,
-        string $source
+        ?string $source = null
     ) {
         parent::__construct(
             "Constraint validation failed. Caught {{ errorCount }} errors:\n{{ violationsMessage }}",
@@ -49,7 +49,7 @@ class ConstraintViolationException extends ErrorException
     {
         $message = '';
 
-        foreach($this->violations as $violation) {
+        foreach ($this->violations as $violation) {
             $message .= \sprintf(" • %s: %s\n", $violation->getPropertyPath(), $violation->getMessage());
         }
 

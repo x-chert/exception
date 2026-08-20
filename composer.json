@@ -1,15 +1,34 @@
 {
 	"name": "xchert/exception",
+	"description": "A Symfony bundle for structured exception handling, error mapping, and JSON-serializable error responses.",
+	"type": "library",
+	"keywords": [
+		"exception",
+		"error-handling",
+		"symfony",
+		"symfony-bundle",
+		"http-exception",
+		"error-mapping",
+		"validation",
+		"json-response"
+	],
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Dustin Simon"
 		}
 	],
-	"license": "MIT",
+	"support": {
+		"issues": "https://github.com/x-chert/exception/issues",
+		"source": "https://github.com/x-chert/exception"
+	},
 	"autoload": {
 		"psr-4": {
 			"Xchert\\Exception\\": "src/"
-		}
+		},
+		"exclude-from-classmap": [
+			"src/Test/"
+		]
 	},
 	"require": {
 		"php": "^8.3",

@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionStack
 {
-    private array $errors;
+    private array $errors = [];
 
     public function __construct(
         private ?string $message = null,
@@ -71,8 +71,8 @@ class ExceptionStack
         throw new StackException(
             $this->message ?? $this->createMessage(),
             $this->parameters,
-            $this->source,
             $this->statusCode,
+            $this->source,
             null,
             ...$this->errors
         );

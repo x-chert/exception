@@ -45,8 +45,10 @@ class ErrorFactory
 
     public function getMapper(\Throwable $exception): ?ErrorMapperInterface
     {
-        foreach($this->mappers as $mapper) {
-            if($mapper->supports($exception)) {
+        /** @var array $mapper */
+        foreach ($this->mappers as $mapper) {
+            $mapper = $mapper['mapper'];
+            if ($mapper->supports($exception)) {
                 return $mapper;
             }
         }

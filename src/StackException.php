@@ -7,12 +7,11 @@ class StackException extends ErrorException
     public const string ERROR_CODE = 'XCHERT_EXCEPTION__STACK_ERROR';
 
     private array $errors;
-    private int $status;
 
     public function __construct(
         string $message,
         array $parameters,
-        int $statusCode,
+        private readonly int $status,
         ?string $source = null,
         ?\Throwable $previous = null,
         \Throwable ...$errors
@@ -26,7 +25,6 @@ class StackException extends ErrorException
         );
 
         $this->errors = $errors;
-        $this->status = $statusCode;
     }
 
     public function getErrors(): array

@@ -11,17 +11,20 @@ class ErrorMapperCompilerPass implements CompilerPassInterface
 {
     public const string TAG_MAPPERS = 'xch.exception.error_mapper';
 
+    /**
+     * @throws \Exception
+     */
     public function process(ContainerBuilder $container): void
     {
         $factoryDefinition = $container->getDefinition(ErrorFactory::class);
         $taggedMappers = $container->findTaggedServiceIds(self::TAG_MAPPERS);
 
-        foreach($taggedMappers as $serviceId => $tags) {
-            foreach($tags as $config) {
+        foreach ($taggedMappers as $serviceId => $tags) {
+            foreach ($tags as $config) {
                 $id = $config['id'] ?? null;
-                $priority = (int) ($config['priority'] ?? 500);
+                $priority = (int)($config['priority'] ?? 500);
 
-                if(!\is_string($id) || empty($id)) {
+                if (!\is_string($id) || empty($id)) {
                     throw new \Exception('Id of error mapper must not be empty.');
                 }
 

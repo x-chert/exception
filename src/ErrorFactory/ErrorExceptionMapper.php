@@ -20,7 +20,7 @@ class ErrorExceptionMapper implements ErrorMapperInterface
         $errors = [];
         $previous = $exception->getPrevious();
 
-        if($previous !== null) {
+        if ($previous !== null) {
             $errors = $factory->getErrors($previous, $debug);
         }
 

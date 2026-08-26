@@ -2,6 +2,7 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
+use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response;
 use Xchert\Exception\Error;
 
@@ -11,24 +12,27 @@ class ErrorFactory
 
     /**
      * @return Error[]
+     * @throws RandomException
      */
     public function getErrors(\Throwable $exception, bool $debug): array
     {
         $mapper = $this->getMapper($exception);
 
-        if($mapper !== null) {
+        if ($mapper !== null) {
             return $mapper->getErrors($exception, $debug, $this);
         }
 
-        return [new Error(
-            \bin2hex(\random_bytes(16)),
-            Error::ERROR_CODE_UNKNOWN,
-            $exception->getMessage(),
-            [],
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            $debug ? $exception->getTrace() : null,
-            (new \ReflectionClass($exception))->getShortName()
-        )];
+        return [
+            new Error(
+                \bin2hex(\random_bytes(16)),
+                Error::ERROR_CODE_UNKNOWN,
+                $exception->getMessage(),
+                [],
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                $debug ? $exception->getTrace() : null,
+                (new \ReflectionClass($exception))->getShortName()
+            )
+        ];
     }
 
     public function addMapper(ErrorMapperInterface $mapper, string $id, int $priority): void

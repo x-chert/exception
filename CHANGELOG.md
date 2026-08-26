@@ -1,3 +1,13 @@
+# v1.0.1
+### New features
+
+* [#13 - Match code PSR-12 standards](https://github.com/x-chert/exception/pull/13)
+
+### Other
+
+* [#14 - Exclude .github for archives](https://github.com/x-chert/exception/pull/14)
+
+
 # v1.0.0
 ### New features
 

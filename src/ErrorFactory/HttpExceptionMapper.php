@@ -2,9 +2,9 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
-use Random\RandomException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Xchert\Exception\Error;
+use Xchert\Exception\Util;
 
 class HttpExceptionMapper implements ErrorMapperInterface
 {
@@ -15,8 +15,6 @@ class HttpExceptionMapper implements ErrorMapperInterface
 
     /**
      * @param HttpException $exception
-     *
-     * @throws RandomException
      */
     public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
     {
@@ -28,7 +26,7 @@ class HttpExceptionMapper implements ErrorMapperInterface
         }
 
         $errors[] = new Error(
-            \bin2hex(\random_bytes(16)),
+            Util::createId(),
             Error::ERROR_CODE_UNKNOWN,
             $exception->getMessage(),
             $exception->getHeaders(),

@@ -2,9 +2,9 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
-use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response;
 use Xchert\Exception\Error;
+use Xchert\Exception\Util;
 
 class ErrorFactory
 {
@@ -12,7 +12,6 @@ class ErrorFactory
 
     /**
      * @return Error[]
-     * @throws RandomException
      */
     public function getErrors(\Throwable $exception, bool $debug): array
     {
@@ -24,7 +23,7 @@ class ErrorFactory
 
         return [
             new Error(
-                \bin2hex(\random_bytes(16)),
+                Util::createId(),
                 Error::ERROR_CODE_UNKNOWN,
                 $exception->getMessage(),
                 [],

@@ -26,7 +26,7 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
         );
 
         $this->occurredAt = new \DateTimeImmutable();
-        $this->id = $this->generateId();
+        $this->id = Util::createId();
     }
 
     abstract public function getErrorCode(): string;
@@ -79,10 +79,5 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
         }
 
         return (string)\preg_replace(\array_keys($regex), \array_values($regex), $message);
-    }
-
-    protected function generateId(): string
-    {
-        return \bin2hex(\random_bytes(16));
     }
 }

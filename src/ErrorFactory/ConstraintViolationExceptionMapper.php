@@ -2,11 +2,11 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
-use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Xchert\Exception\Error;
+use Xchert\Exception\Util;
 use Xchert\Exception\Validation\ConstraintViolationException;
 
 class ConstraintViolationExceptionMapper implements ErrorMapperInterface
@@ -18,8 +18,6 @@ class ConstraintViolationExceptionMapper implements ErrorMapperInterface
 
     /**
      * @param ConstraintViolationException $exception
-     *
-     * @throws RandomException
      */
     public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
     {
@@ -27,7 +25,7 @@ class ConstraintViolationExceptionMapper implements ErrorMapperInterface
 
         foreach ($exception->getViolations() as $violation) {
             $errors[] = new Error(
-                \bin2hex(\random_bytes(16)),
+                Util::createId(),
                 $this->getErrorCode($violation),
                 $violation->getMessage(),
                 \array_merge(

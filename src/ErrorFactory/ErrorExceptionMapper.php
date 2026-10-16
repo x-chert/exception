@@ -38,4 +38,18 @@ class ErrorExceptionMapper implements ErrorMapperInterface
 
         return $errors;
     }
+
+    public function getStatusCode(\Throwable $exception): int
+    {
+        \assert($exception instanceof ErrorExceptionInterface);
+
+        return $exception->getStatusCode();
+    }
+
+    public function getHeaders(\Throwable $exception): array
+    {
+        assert($exception instanceof ErrorExceptionInterface);
+
+        return $exception->getHeaders();
+    }
 }

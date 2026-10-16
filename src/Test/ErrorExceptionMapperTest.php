@@ -90,6 +90,30 @@ class ErrorExceptionMapperTest extends TestCase
         $this->assertInstanceOf(Error::class, $errors[1]);
     }
 
+    public function testGetStatusCodeReturnsExceptionStatusCode(): void
+    {
+        $exception = new DummyErrorException('User not found');
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->mapper->getStatusCode($exception));
+    }
+
+    public function testGetHeadersReturnsExceptionHeaders(): void
+    {
+        $exception = new DummyErrorException(
+            message: 'User not found',
+            headers: ['X-Custom-Header' => 'Value']
+        );
+
+        $this->assertEquals(['X-Custom-Header' => 'Value'], $this->mapper->getHeaders($exception));
+    }
+
+    public function testGetHeadersReturnsEmptyArrayWithoutHeaders(): void
+    {
+        $exception = new DummyErrorException('User not found');
+
+        $this->assertEquals([], $this->mapper->getHeaders($exception));
+    }
+
     protected function setUp(): void
     {
         $this->mapper = new ErrorExceptionMapper();

@@ -2,7 +2,6 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
-use Random\RandomException;
 use Xchert\Exception\StackException;
 
 class StackExceptionMapper implements ErrorMapperInterface
@@ -14,8 +13,6 @@ class StackExceptionMapper implements ErrorMapperInterface
 
     /**
      * @param StackException $exception
-     *
-     * @throws RandomException
      */
     public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
     {

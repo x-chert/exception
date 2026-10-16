@@ -35,6 +35,28 @@ class ErrorFactory
         ];
     }
 
+    public function getStatusCode(\Throwable $exception): int
+    {
+        $mapper = $this->getMapper($exception);
+
+        if ($mapper !== null) {
+            return $mapper->getStatusCode($exception);
+        }
+
+        return Response::HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    public function getHeaders(\Throwable $exception): array
+    {
+        $mapper = $this->getMapper($exception);
+
+        if ($mapper !== null) {
+            return $mapper->getHeaders($exception);
+        }
+
+        return [];
+    }
+
     public function addMapper(ErrorMapperInterface $mapper, string $id, int $priority): void
     {
         $this->mappers[$id] = ['priority' => $priority, 'mapper' => $mapper];

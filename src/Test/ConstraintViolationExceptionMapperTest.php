@@ -108,6 +108,26 @@ class ConstraintViolationExceptionMapperTest extends TestCase
         $this->assertIsArray($errors[0]->getTrace());
     }
 
+    public function testGetStatusCodeReturnsBadRequest(): void
+    {
+        $violations = new ConstraintViolationList([
+            new ConstraintViolation('Error', 'Error', [], null, 'field', 'val')
+        ]);
+        $exception = new ConstraintViolationException($violations, []);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->mapper->getStatusCode($exception));
+    }
+
+    public function testGetHeadersReturnsEmptyArray(): void
+    {
+        $violations = new ConstraintViolationList([
+            new ConstraintViolation('Error', 'Error', [], null, 'field', 'val')
+        ]);
+        $exception = new ConstraintViolationException($violations, []);
+
+        $this->assertEquals([], $this->mapper->getHeaders($exception));
+    }
+
     protected function setUp(): void
     {
         $this->mapper = new ConstraintViolationExceptionMapper();

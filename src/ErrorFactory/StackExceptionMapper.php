@@ -7,7 +7,6 @@ use Xchert\Exception\StackException;
 
 class StackExceptionMapper implements ErrorMapperInterface
 {
-
     public function supports(\Throwable $exception): bool
     {
         return $exception instanceof StackException;
@@ -39,5 +38,19 @@ class StackExceptionMapper implements ErrorMapperInterface
         }
 
         return $errors;
+    }
+
+    public function getStatusCode(\Throwable $exception): int
+    {
+        \assert($exception instanceof StackException);
+
+        return $exception->getStatusCode();
+    }
+
+    public function getHeaders(\Throwable $exception): array
+    {
+        \assert($exception instanceof StackException);
+
+        return $exception->getHeaders();
     }
 }

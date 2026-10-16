@@ -8,7 +8,6 @@ use Xchert\Exception\Error;
 
 class HttpExceptionMapper implements ErrorMapperInterface
 {
-
     public function supports(\Throwable $exception): bool
     {
         return $exception instanceof HttpException;
@@ -39,5 +38,19 @@ class HttpExceptionMapper implements ErrorMapperInterface
         );
 
         return $errors;
+    }
+
+    public function getStatusCode(\Throwable $exception): int
+    {
+        \assert($exception instanceof HttpException);
+
+        return $exception->getStatusCode();
+    }
+
+    public function getHeaders(\Throwable $exception): array
+    {
+        \assert($exception instanceof HttpException);
+
+        return $exception->getHeaders();
     }
 }

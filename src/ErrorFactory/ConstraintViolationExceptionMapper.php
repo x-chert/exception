@@ -47,6 +47,20 @@ class ConstraintViolationExceptionMapper implements ErrorMapperInterface
         return $errors;
     }
 
+    public function getStatusCode(\Throwable $exception): int
+    {
+        \assert($exception instanceof ConstraintViolationException);
+
+        return $exception->getStatusCode();
+    }
+
+    public function getHeaders(\Throwable $exception): array
+    {
+        \assert($exception instanceof ConstraintViolationException);
+
+        return $exception->getHeaders();
+    }
+
     protected function getErrorCode(ConstraintViolationInterface $violation): string
     {
         $code = $violation->getCode();

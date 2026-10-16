@@ -80,6 +80,34 @@ class StackExceptionMapperTest extends TestCase
         $this->assertEquals('Inner error', $errors[1]->getMessage());
     }
 
+    public function testGetStatusCodeReturnsStackStatusCode(): void
+    {
+        $stackException = new StackException(
+            'Stack container exception',
+            [],
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            'stack_source',
+            null,
+            new BadRequestHttpException('Inner error')
+        );
+
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->mapper->getStatusCode($stackException));
+    }
+
+    public function testGetHeadersReturnsEmptyArray(): void
+    {
+        $stackException = new StackException(
+            'Stack container exception',
+            [],
+            Response::HTTP_BAD_REQUEST,
+            'stack_source',
+            null,
+            new BadRequestHttpException('Inner error')
+        );
+
+        $this->assertEquals([], $this->mapper->getHeaders($stackException));
+    }
+
     protected function setUp(): void
     {
         $this->mapper = new StackExceptionMapper();

@@ -2,8 +2,10 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
+use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\StackException;
 
+#[AsErrorMapper(id: 'stack_exception', priority: 1100)]
 class StackExceptionMapper implements ErrorMapperInterface
 {
     public function supports(\Throwable $exception): bool

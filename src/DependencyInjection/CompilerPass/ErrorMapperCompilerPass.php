@@ -6,10 +6,11 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Xchert\Exception\ErrorFactory\ErrorFactory;
+use Xchert\Util\Value;
 
 class ErrorMapperCompilerPass implements CompilerPassInterface
 {
-    public const string TAG_MAPPERS = 'xch.exception.error_mapper';
+    public const string TAG = 'exception.error_mapper';
 
     /**
      * @throws \Exception
@@ -17,25 +18,27 @@ class ErrorMapperCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $factoryDefinition = $container->getDefinition(ErrorFactory::class);
-        $taggedMappers = $container->findTaggedServiceIds(self::TAG_MAPPERS);
+        $taggedMappers = $container->findTaggedServiceIds(self::TAG);
 
+        /**
+         * @param string $serviceId
+         * @param array $tags
+         */
         foreach ($taggedMappers as $serviceId => $tags) {
-            foreach ($tags as $config) {
-                $id = $config['id'] ?? null;
-                $priority = (int)($config['priority'] ?? 500);
+            \assert(\is_array($tags));
 
-                if (!\is_string($id) || empty($id)) {
+            foreach ($tags as $tag) {
+                \assert(\is_array($tag));
+
+                $id = (string)($tag['id'] ?? null);
+
+                if (Value::isEmpty($id)) {
                     throw new \Exception('Id of error mapper must not be empty.');
                 }
 
-                $factoryDefinition->addMethodCall(
-                    'addMapper',
-                    [
-                        new Reference($serviceId),
-                        $id,
-                        $priority
-                    ]
-                );
+                $priority = (int)($tag['priority'] ?? 0);
+
+                $factoryDefinition->addMethodCall('addMapper', [new Reference($serviceId), $id, $priority]);
             }
         }
     }

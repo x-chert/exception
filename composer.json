@@ -25,10 +25,12 @@
 	"autoload": {
 		"psr-4": {
 			"Xchert\\Exception\\": "src/"
-		},
-		"exclude-from-classmap": [
-			"src/Test/"
-		]
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Xchert\\Exception\\Test\\": "tests/"
+		}
 	},
 	"require": {
 		"php": "^8.3",
@@ -39,7 +41,7 @@
 		"symfony/uid": "^8.1"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^13.3"
+		"phpunit/phpunit": "^13.4"
 	},
 	"archive": {
 		"exclude": [

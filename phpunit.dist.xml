@@ -17,6 +17,12 @@
 		displayDetailsOnTestsThatTriggerWarnings="true"
 		displayDetailsOnPhpunitNotices="true"
 >
+	<php>
+		<env name="KERNEL_CLASS" value="Xchert\Exception\Test\TestKernel" />
+		<env name="APP_ENV" value="test" />
+		<env name="APP_DEBUG" value="1" />
+	</php>
+
 	<testsuites>
 		<testsuite name="default">
 			<directory>tests/</directory>

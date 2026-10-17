@@ -7,15 +7,17 @@ namespace Xchert\Exception\Test\Dummy;
 use Symfony\Component\HttpFoundation\Response;
 use Xchert\Exception\ErrorException;
 
-class DummyErrorException extends ErrorException
+class TestErrorException extends ErrorException
 {
+    public const string ERROR_CODE = 'TEST_ERROR';
+
     public function getErrorCode(): string
     {
-        return 'XCHERT_EXCEPTION__TEST_ERROR';
+        return self::ERROR_CODE;
     }
 
     public function getStatusCode(): int
     {
-        return Response::HTTP_BAD_REQUEST;
+        return Response::HTTP_UNPROCESSABLE_ENTITY;
     }
 }

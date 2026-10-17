@@ -3,9 +3,11 @@
 namespace Xchert\Exception\ErrorFactory;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\Error;
 use Xchert\Exception\Util;
 
+#[AsErrorMapper(id: 'http_exception', priority: 0)]
 class HttpExceptionMapper implements ErrorMapperInterface
 {
     public function supports(\Throwable $exception): bool

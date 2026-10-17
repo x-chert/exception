@@ -5,10 +5,12 @@ namespace Xchert\Exception\ErrorFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\Error;
 use Xchert\Exception\Util;
 use Xchert\Exception\Validation\ConstraintViolationException;
 
+#[AsErrorMapper(id: 'constraint_violation_exception', priority: 1100)]
 class ConstraintViolationExceptionMapper implements ErrorMapperInterface
 {
     public function supports(\Throwable $exception): bool

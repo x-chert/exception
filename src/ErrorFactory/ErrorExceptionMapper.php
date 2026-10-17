@@ -2,9 +2,11 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
+use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\Error;
 use Xchert\Exception\ErrorExceptionInterface;
 
+#[AsErrorMapper(id: 'error_exception', priority: 1000)]
 class ErrorExceptionMapper implements ErrorMapperInterface
 {
     public function supports(\Throwable $exception): bool

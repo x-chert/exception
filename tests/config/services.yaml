@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autoconfigure: true
+
+    Xchert\Exception\Test\Dummy\PublicDummyService:
+        public: true
+        arguments:
+            $errorFactory: '@Xchert\Exception\ErrorFactory\ErrorFactory'

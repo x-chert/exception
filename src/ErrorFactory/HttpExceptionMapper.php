@@ -2,6 +2,7 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\Error;
@@ -20,24 +21,14 @@ class HttpExceptionMapper implements ErrorMapperInterface
      */
     public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
     {
-        $errors = [];
+        $previousErrors = [];
         $previous = $exception->getPrevious();
 
         if ($previous !== null) {
-            $errors = $factory->getErrors($previous, $debug);
+            $previousErrors = $factory->createErrors($previous, $debug);
         }
 
-        $errors[] = new Error(
-            Util::createId(),
-            Error::ERROR_CODE_UNKNOWN,
-            $exception->getMessage(),
-            $exception->getHeaders(),
-            $exception->getStatusCode(),
-            $debug ? $exception->getTrace() : null,
-            (new \ReflectionClass($exception))->getShortName()
-        );
-
-        return $errors;
+        return [$this->createError($exception, $debug, $previousErrors, $factory)];
     }
 
     public function getStatusCode(\Throwable $exception): int
@@ -52,5 +43,44 @@ class HttpExceptionMapper implements ErrorMapperInterface
         \assert($exception instanceof HttpException);
 
         return $exception->getHeaders();
+    }
+
+    public function createError(\Throwable $exception, bool $debug, array $errors, ErrorFactory $factory): Error
+    {
+        \assert($exception instanceof HttpException);
+
+        $code = $this->getErrorCode($exception);
+
+        return new Error(
+            instance: Util::createInstance(),
+            type: $factory->createType($code),
+            title: $this->getTitle($exception),
+            detail: $exception->getMessage(),
+            status: $exception->getStatusCode(),
+            code: $code,
+            occurredAt: new \DateTime(),
+            trace: $debug ? $exception->getTrace() : null,
+            errors: $errors
+        );
+    }
+
+    public function getErrorCode(\Throwable $exception): string
+    {
+        \assert($exception instanceof HttpException);
+
+        $code = Response::$statusTexts[$exception->getStatusCode()] ?? null;
+
+        if ($code === null) {
+            return Error::ERROR_CODE_UNKNOWN;
+        }
+
+        return \str_replace(' ', '_', \strtoupper($code));
+    }
+
+    public function getTitle(\Throwable $exception): string
+    {
+        \assert($exception instanceof HttpException);
+
+        return Response::$statusTexts[$exception->getStatusCode()] ?? Error::DEFAULT_TITLE;
     }
 }

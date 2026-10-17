@@ -5,53 +5,47 @@ namespace Xchert\Exception\ErrorFactory;
 use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\Error;
 use Xchert\Exception\ErrorExceptionInterface;
+use Xchert\Exception\Util;
 
 #[AsErrorMapper(id: 'error_exception', priority: 1000)]
-class ErrorExceptionMapper implements ErrorMapperInterface
+class ErrorExceptionMapper extends HttpExceptionMapper
 {
     public function supports(\Throwable $exception): bool
     {
         return $exception instanceof ErrorExceptionInterface;
     }
 
-    /**
-     * @param ErrorExceptionInterface $exception
-     */
-    public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
-    {
-        $errors = [];
-        $previous = $exception->getPrevious();
-
-        if ($previous !== null) {
-            $errors = $factory->getErrors($previous, $debug);
-        }
-
-        $errors[] = new Error(
-            $exception->getId(),
-            $exception->getErrorCode(),
-            $exception->getMessage(),
-            $exception->getParameters(),
-            $exception->getStatusCode(),
-            $debug ? $exception->getTrace() : null,
-            $exception->getType(),
-            $exception->getSource(),
-            $exception->getOccurredAt()
-        );
-
-        return $errors;
-    }
-
-    public function getStatusCode(\Throwable $exception): int
+    public function createError(\Throwable $exception, bool $debug, array $errors, ErrorFactory $factory): Error
     {
         \assert($exception instanceof ErrorExceptionInterface);
 
-        return $exception->getStatusCode();
+        $params = $exception->getParameters();
+
+        return new Error(
+            instance: Util::createInstance($exception->getId()),
+            type: $factory->createType($exception->getErrorCode()),
+            title: $exception->getTitle(),
+            detail: $exception->getMessage(),
+            status: $exception->getStatusCode(),
+            code: $exception->getErrorCode(),
+            occurredAt: $exception->getOccurredAt(),
+            trace: $debug ? $exception->getTrace() : null,
+            additional: empty($params) ? [] : ['parameters' => $params],
+            errors: $errors
+        );
     }
 
-    public function getHeaders(\Throwable $exception): array
+    public function getErrorCode(\Throwable $exception): string
     {
-        assert($exception instanceof ErrorExceptionInterface);
+        \assert($exception instanceof ErrorExceptionInterface);
 
-        return $exception->getHeaders();
+        return $exception->getErrorCode();
+    }
+
+    public function getTitle(\Throwable $exception): string
+    {
+        \assert($exception instanceof ErrorExceptionInterface);
+
+        return $exception->getTitle();
     }
 }

@@ -4,22 +4,20 @@ namespace Xchert\Exception;
 
 class StackException extends ErrorException
 {
-    public const string ERROR_CODE = 'XCHERT_EXCEPTION__STACK_ERROR';
-
     private array $errors;
 
     public function __construct(
         string $message,
-        array $parameters,
+        string $title,
         private readonly int $status,
-        ?string $source = null,
+        private readonly string $errorCode,
         ?\Throwable $previous = null,
         \Throwable ...$errors
     ) {
         parent::__construct(
             $message,
-            $parameters,
-            $source,
+            $title,
+            [],
             [],
             $previous
         );
@@ -34,7 +32,7 @@ class StackException extends ErrorException
 
     public function getErrorCode(): string
     {
-        return self::ERROR_CODE;
+        return $this->errorCode;
     }
 
     public function getStatusCode(): int

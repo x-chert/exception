@@ -6,7 +6,7 @@ use Xchert\Exception\Attribute\AsErrorMapper;
 use Xchert\Exception\StackException;
 
 #[AsErrorMapper(id: 'stack_exception', priority: 1100)]
-class StackExceptionMapper implements ErrorMapperInterface
+class StackExceptionMapper extends ErrorExceptionMapper
 {
     public function supports(\Throwable $exception): bool
     {
@@ -18,38 +18,23 @@ class StackExceptionMapper implements ErrorMapperInterface
      */
     public function getErrors(\Throwable $exception, bool $debug, ErrorFactory $factory): array
     {
+        \assert($exception instanceof StackException);
+
         $errors = [];
         $previous = $exception->getPrevious();
 
         if ($previous !== null) {
-            $errors = \array_merge(
-                $errors,
-                $factory->getErrors($previous, $debug)
-            );
+            $errors = $factory->createErrors($previous, $debug);
         }
 
         /** @var \Throwable $error */
         foreach ($exception->getErrors() as $e) {
             $errors = \array_merge(
                 $errors,
-                $factory->getErrors($e, $debug)
+                $factory->createErrors($e, $debug)
             );
         }
 
         return $errors;
-    }
-
-    public function getStatusCode(\Throwable $exception): int
-    {
-        \assert($exception instanceof StackException);
-
-        return $exception->getStatusCode();
-    }
-
-    public function getHeaders(\Throwable $exception): array
-    {
-        \assert($exception instanceof StackException);
-
-        return $exception->getHeaders();
     }
 }

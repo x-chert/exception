@@ -13,8 +13,8 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
 
     public function __construct(
         string $message,
+        private readonly string $title,
         private readonly array $parameters = [],
-        private readonly ?string $source = null,
         array $headers = [],
         ?\Throwable $previous = null
     ) {
@@ -36,19 +36,14 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
         return $this->id;
     }
 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     public function getParameters(): array
     {
         return $this->parameters;
-    }
-
-    public function getType(): string
-    {
-        return (new \ReflectionClass($this))->getShortName();
-    }
-
-    public function getSource(): ?string
-    {
-        return $this->source;
     }
 
     public function getOccurredAt(): \DateTimeInterface
@@ -67,17 +62,18 @@ abstract class ErrorException extends HttpException implements ErrorExceptionInt
             return $message;
         }
 
-        $regex = [];
+        return (string)\preg_replace_callback(
+            '/\{\{\s*([^\s{}]+)\s*\}\}/',
+            static function (array $match) use ($parameters): string {
+                $value = $parameters[$match[1]] ?? null;
 
-        foreach ($parameters as $key => $value) {
-            if (\is_array($value)) {
-                continue;
-            }
+                if (\is_scalar($value) || $value instanceof \Stringable) {
+                    return (string)$value;
+                }
 
-            $formattedKey = \preg_replace('/[^a-z]/i', '', $key);
-            $regex[\sprintf('/\{\{(\s+)?(%s)(\s+)?\}\}/', $formattedKey)] = $value;
-        }
-
-        return (string)\preg_replace(\array_keys($regex), \array_values($regex), $message);
+                return $match[0];
+            },
+            $message
+        );
     }
 }

@@ -12,9 +12,7 @@ interface ErrorExceptionInterface extends HttpExceptionInterface
 
     public function getParameters(): array;
 
-    public function getType(): string;
-
-    public function getSource(): ?string;
+    public function getTitle(): string;
 
     public function getOccurredAt(): \DateTimeInterface;
 }

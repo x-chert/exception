@@ -2,6 +2,7 @@
 
 namespace Xchert\Exception\ErrorFactory;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Xchert\Exception\Error;
 use Xchert\Exception\Util;
@@ -9,6 +10,19 @@ use Xchert\Exception\Util;
 class ErrorFactory
 {
     private array $mappers = [];
+
+    public function __construct(
+        private readonly ?string $problemTypeBaseUri = null
+    ) {}
+
+    public function createType(string $errorCode): string
+    {
+        if ($this->problemTypeBaseUri === null || $errorCode === Error::ERROR_CODE_UNKNOWN) {
+            return Error::DEFAULT_TYPE;
+        }
+
+        return $this->problemTypeBaseUri.\rawurlencode($errorCode);
+    }
 
     /**
      * @return Error[]
@@ -23,15 +37,63 @@ class ErrorFactory
 
         return [
             new Error(
-                Util::createId(),
-                Error::ERROR_CODE_UNKNOWN,
-                $exception->getMessage(),
-                [],
-                Response::HTTP_INTERNAL_SERVER_ERROR,
-                $debug ? $exception->getTrace() : null,
-                (new \ReflectionClass($exception))->getShortName()
+                instance: Util::createInstance(),
+                type: $this->createType(Error::ERROR_CODE_UNKNOWN),
+                title: Error::DEFAULT_TITLE,
+                detail: $exception->getMessage(),
+                status: Response::HTTP_INTERNAL_SERVER_ERROR,
+                code: Error::ERROR_CODE_UNKNOWN,
+                occurredAt: new \DateTime(),
+                trace: $debug ? $exception->getTrace() : null,
             )
         ];
+    }
+
+    public function getProblemDetails(\Throwable $exception, bool $debug): Error
+    {
+        $errors = \array_values($this->getErrors($exception, $debug));
+
+        if (\count($errors) === 1) {
+            return $errors[0];
+        }
+
+        $mapper = $this->getMapper($exception);
+
+        if ($mapper !== null) {
+            return $mapper->createError($exception, $debug, $errors, $this);
+        }
+
+        return new Error(
+            instance: Util::createInstance(),
+            type: $this->createType(Error::ERROR_CODE_UNKNOWN),
+            title: Error::DEFAULT_TITLE,
+            detail: $exception->getMessage(),
+            status: Response::HTTP_INTERNAL_SERVER_ERROR,
+            code: Error::ERROR_CODE_UNKNOWN,
+            occurredAt: new \DateTime(),
+            trace: $debug ? $exception->getTrace() : null,
+            errors: $errors
+        );
+    }
+
+    public function createResponse(\Throwable $exception, bool $debug): JsonResponse
+    {
+        $problem = $this->getProblemDetails($exception, $debug);
+        $headers = $this->getHeaders($exception);
+        $headers['Content-Type'] = 'application/problem+json';
+
+        return new JsonResponse($problem, $problem->getStatus(), $headers);
+    }
+
+    public function getErrorCode(\Throwable $exception): string
+    {
+        $mapper = $this->getMapper($exception);
+
+        if ($mapper !== null) {
+            return $mapper->getErrorCode($exception);
+        }
+
+        return Error::ERROR_CODE_UNKNOWN;
     }
 
     public function getStatusCode(\Throwable $exception): int

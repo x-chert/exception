@@ -3,6 +3,8 @@ services:
         autoconfigure: true
 
     Xchert\Exception\ErrorFactory\ErrorFactory:
+        arguments:
+            $problemTypeBaseUri: '%exception.problem_type_base_uri%'
 
     Xchert\Exception\ErrorFactory\StackExceptionMapper:
     Xchert\Exception\ErrorFactory\ConstraintViolationExceptionMapper:

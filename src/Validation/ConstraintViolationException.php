@@ -8,20 +8,19 @@ use Xchert\Exception\ErrorException;
 
 class ConstraintViolationException extends ErrorException
 {
-    public const string ERROR_CODE = 'XCHERT_EXCEPTION__CONSTRAINT_VIOLATION';
+    public const string ERROR_CODE = 'CONSTRAINT_VIOLATION';
 
     public function __construct(
         protected readonly ConstraintViolationListInterface $violations,
-        protected readonly array $data,
-        ?string $source = null
+        protected readonly array $data
     ) {
         parent::__construct(
             "Constraint validation failed. Caught {{ errorCount }} errors:\n{{ violationsMessage }}",
+            'Constraint validation failed.',
             [
                 'errorCount' => $this->violations->count(),
                 'violationsMessage' => $this->createViolationsMessage()
             ],
-            $source
         );
     }
 

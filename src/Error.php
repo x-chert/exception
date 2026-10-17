@@ -2,53 +2,36 @@
 
 namespace Xchert\Exception;
 
-use DateTimeInterface;
-use Symfony\Component\HttpFoundation\Response;
-
+/**
+ * Problem details object according to RFC 9457.
+ */
 class Error implements \JsonSerializable
 {
-    public const string ERROR_CODE_UNKNOWN = 'XCHERT_EXCEPTION__UNKNOWN_ERROR';
+    public const string ERROR_CODE_UNKNOWN = 'UNKNOWN_ERROR';
 
+    public const string DEFAULT_TYPE = 'about:blank';
+    public const string DEFAULT_TITLE = 'Unknown error';
+
+    /**
+     * @param Error[] $errors
+     */
     public function __construct(
-        private readonly string $id,
+        private readonly string $instance,
+        private readonly string $type,
+        private readonly string $title,
+        private readonly string $detail,
+        private readonly int $status,
+
         private readonly string $code,
-        private readonly string $message,
-        private readonly array $parameters = [],
-        private readonly int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR,
-        private readonly ?array $trace = null,
-        private readonly string $type = 'Error',
-        private readonly ?string $source = null,
-        private readonly ?DateTimeInterface $occuredAt = new \DateTime()
+        private readonly \DateTimeInterface $occurredAt,
+        private readonly ?array $trace = [],
+        private readonly array $additional = [],
+        private readonly array $errors = []
     ) {}
 
-    public function getId(): string
+    public function getInstance(): string
     {
-        return $this->id;
-    }
-
-    public function getErrorCode(): string
-    {
-        return $this->code;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    public function getTrace(): ?array
-    {
-        return $this->trace;
+        return $this->instance;
     }
 
     public function getType(): string
@@ -56,28 +39,69 @@ class Error implements \JsonSerializable
         return $this->type;
     }
 
-    public function getSource(): ?string
+    public function getTitle(): string
     {
-        return $this->source;
+        return $this->title;
     }
 
-    public function getOccuredAt(): DateTimeInterface
+    public function getDetail(): string
     {
-        return $this->occuredAt;
+        return $this->detail;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function getOccurredAt(): \DateTimeInterface
+    {
+        return $this->occurredAt;
+    }
+
+    public function getTrace(): ?array
+    {
+        return $this->trace;
+    }
+
+    public function getAdditional(): array
+    {
+        return $this->additional;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 
     public function jsonSerialize(): array
     {
-        return [
-            'id' => $this->id,
-            'code' => $this->code,
-            'message' => $this->message,
-            'parameters' => $this->parameters,
-            'statusCode' => $this->statusCode,
-            'trace' => $this->trace,
-            'type' => $this->type,
-            'source' => $this->source,
-            'occuredAt' => $this->occuredAt->format(DateTimeInterface::RFC3339_EXTENDED)
+        $meta = [
+            'occurredAt' => $this->occurredAt->format(\DateTimeInterface::RFC3339_EXTENDED),
         ];
+
+        if (!empty($this->trace)) {
+            $meta['trace'] = $this->trace;
+        }
+
+        return \array_filter(
+            [
+                'instance' => $this->instance,
+                'type' => $this->type,
+                'title' => $this->title,
+                'detail' => $this->detail,
+                'status' => $this->status,
+                'code' => $this->code,
+                'meta' => $meta,
+                'additional' => empty($this->additional) ? null : $this->additional,
+                'errors' => empty($this->errors) ? null : $this->errors,
+            ],
+            static fn(mixed $value): bool => $value !== null
+        );
     }
 }

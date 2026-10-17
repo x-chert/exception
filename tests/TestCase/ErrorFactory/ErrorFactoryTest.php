@@ -27,12 +27,12 @@ class ErrorFactoryTest extends TestCase
         $factory->addMapper(new FixedErrorMapper('low'), 'low', 0);
         $factory->addMapper(new FixedErrorMapper('high'), 'high', 100);
 
-        $this->assertSame('high', $factory->getProblemDetails(new \RuntimeException(), false)->getCode());
+        $this->assertSame('high', $factory->createError(new \RuntimeException(), false)->getCode());
     }
 
     public function testExceptionWithoutMapperBecomesUnknownError(): void
     {
-        $problem = new ErrorFactory()->getProblemDetails(new \RuntimeException('boom'), false);
+        $problem = new ErrorFactory()->createError(new \RuntimeException('boom'), false);
 
         $this->assertSame(Error::ERROR_CODE_UNKNOWN, $problem->getCode());
         $this->assertSame(500, $problem->getStatus());

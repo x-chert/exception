@@ -25,7 +25,7 @@ class HttpExceptionMapper implements ErrorMapperInterface
         $previous = $exception->getPrevious();
 
         if ($previous !== null) {
-            $previousErrors = $factory->getErrors($previous, $debug);
+            $previousErrors = $factory->createErrors($previous, $debug);
         }
 
         return [$this->createError($exception, $debug, $previousErrors, $factory)];

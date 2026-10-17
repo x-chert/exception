@@ -16,7 +16,7 @@ class HttpExceptionMapperTest extends TestCase
 {
     public function testHttpExceptionIsMapped(): void
     {
-        $problem = $this->createFactory()->getProblemDetails(new NotFoundHttpException('Page missing.'), false);
+        $problem = $this->createFactory()->createError(new NotFoundHttpException('Page missing.'), false);
 
         $this->assertSame('https://example.com/problems/NOT_FOUND', $problem->getType());
         $this->assertSame('Not Found', $problem->getTitle());
@@ -29,7 +29,7 @@ class HttpExceptionMapperTest extends TestCase
     {
         $exception = new NotFoundHttpException('Page missing.', new \RuntimeException('inner'));
 
-        $problem = $this->createFactory()->getProblemDetails($exception, false);
+        $problem = $this->createFactory()->createError($exception, false);
 
         $this->assertSame('NOT_FOUND', $problem->getCode());
         $this->assertSame([Error::ERROR_CODE_UNKNOWN], \array_map(static fn(Error $e): string => $e->getCode(), $problem->getErrors()));

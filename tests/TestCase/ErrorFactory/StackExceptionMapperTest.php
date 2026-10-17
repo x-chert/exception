@@ -26,7 +26,7 @@ class StackExceptionMapperTest extends TestCase
 
         $exception = new StackException('message', 'title', 422, 'STACK', null, new NotFoundHttpException('a'), new \RuntimeException('b'));
 
-        $problem = $factory->getProblemDetails($exception, false);
+        $problem = $factory->createError($exception, false);
 
         $this->assertSame('STACK', $problem->getCode());
         $this->assertSame(422, $problem->getStatus());

@@ -24,14 +24,14 @@ class StackExceptionMapper extends ErrorExceptionMapper
         $previous = $exception->getPrevious();
 
         if ($previous !== null) {
-            $errors = $factory->getErrors($previous, $debug);
+            $errors = $factory->createErrors($previous, $debug);
         }
 
         /** @var \Throwable $error */
         foreach ($exception->getErrors() as $e) {
             $errors = \array_merge(
                 $errors,
-                $factory->getErrors($e, $debug)
+                $factory->createErrors($e, $debug)
             );
         }
 

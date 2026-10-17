@@ -27,7 +27,7 @@ class ConstraintViolationExceptionMapperTest extends TestCase
             new ConstraintViolation('Invalid email.', null, [], null, 'contact.email', 'x', null, Email::INVALID_FORMAT_ERROR, new Email()),
         ]), []);
 
-        $problem = $factory->getProblemDetails($exception, false);
+        $problem = $factory->createError($exception, false);
         [$blank, $email] = $problem->getErrors();
 
         $this->assertSame(ConstraintViolationException::ERROR_CODE, $problem->getCode());

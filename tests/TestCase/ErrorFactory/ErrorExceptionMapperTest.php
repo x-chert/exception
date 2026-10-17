@@ -19,7 +19,7 @@ class ErrorExceptionMapperTest extends TestCase
         $factory->addMapper(new ErrorExceptionMapper(), 'error_exception', 0);
         $exception = new TestErrorException('Hello {{ name }}', 'My title', ['name' => 'Alice']);
 
-        $problem = $factory->getProblemDetails($exception, false);
+        $problem = $factory->createError($exception, false);
 
         $this->assertSame('urn:uuid:'.$exception->getId(), $problem->getInstance());
         $this->assertSame('https://example.com/problems/TEST_ERROR', $problem->getType());

@@ -27,7 +27,7 @@ class ErrorFactory
     /**
      * @return Error[]
      */
-    public function getErrors(\Throwable $exception, bool $debug): array
+    public function createErrors(\Throwable $exception, bool $debug): array
     {
         $mapper = $this->getMapper($exception);
 
@@ -49,9 +49,9 @@ class ErrorFactory
         ];
     }
 
-    public function getProblemDetails(\Throwable $exception, bool $debug): Error
+    public function createError(\Throwable $exception, bool $debug): Error
     {
-        $errors = \array_values($this->getErrors($exception, $debug));
+        $errors = \array_values($this->createErrors($exception, $debug));
 
         if (\count($errors) === 1) {
             return $errors[0];
@@ -78,7 +78,7 @@ class ErrorFactory
 
     public function createResponse(\Throwable $exception, bool $debug): JsonResponse
     {
-        $problem = $this->getProblemDetails($exception, $debug);
+        $problem = $this->createError($exception, $debug);
         $headers = $this->getHeaders($exception);
         $headers['Content-Type'] = 'application/problem+json';
 

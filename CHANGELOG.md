@@ -1,3 +1,16 @@
+# v2.0.0
+### New features
+
+* [#18 - Retrieve status code from exception via ErrorFactory](https://github.com/x-chert/exception/pull/18)
+* [#19 - Use symfony/uid to generate error ids](https://github.com/x-chert/exception/pull/19)
+* [#22 - AsErrorMapper attribute for auto configuration](https://github.com/x-chert/exception/pull/22)
+* [#24 - RFC 9457](https://github.com/x-chert/exception/pull/24)
+
+### Other
+
+* [#23 - New test suite](https://github.com/x-chert/exception/pull/23)
+
+
 # v1.0.1
 ### New features
 
